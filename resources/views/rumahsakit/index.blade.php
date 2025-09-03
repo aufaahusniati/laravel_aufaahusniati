@@ -53,30 +53,57 @@
     </div>
 @endsection
 
+
+
 @push('scripts')
 <script>
 $(document).ready(function() {
-    $('.btn-delete').click(function(e) {
+    $('tbody').on('click', '.btn-delete', function(e) {
         e.preventDefault();
         let id = $(this).data('id');
+        let token = $('meta[name="csrf-token"]').attr('content');
+        let deleteUrlTemplate = "{{ route('rumahsakit.destroy', ['rumahsakit' => ':id']) }}";
+        let url = deleteUrlTemplate.replace(':id', id);
 
-        if (confirm('Yakin ingin menghapus data ini?')) {
-            $.ajax({
-                url: '/rumahsakit/' + id,
-                type: 'POST',
-                data: {
-                    _method: 'DELETE',
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(res) {
-                    $('#row-' + id).remove();
-                    alert('Data berhasil dihapus!');
-                },
-                error: function(err) {
-                    alert('Gagal menghapus data!');
-                }
-            });
-        }
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data rumah sakit yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url, 
+                    type: 'POST',
+                    data: {
+                        "_token": token,
+                        "_method": "DELETE" 
+                    },
+                    success: function(response) {
+                        $('#row-' + id).fadeOut(500, function() {
+                            $(this).remove();
+                        });
+
+                        Swal.fire(
+                            'Berhasil!',
+                            'Data rumah sakit telah dihapus.',
+                            'success'
+                        );
+                    },
+                    error: function(err) {
+                        Swal.fire(
+                            'Gagal!',
+                            'Terjadi kesalahan saat menghapus data.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     });
 });
 </script>

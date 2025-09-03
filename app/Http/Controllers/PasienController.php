@@ -11,7 +11,9 @@ class PasienController extends Controller
     public function index()
     {
         $pasiens = Pasien::with('rumahSakit')->latest()->paginate(10);
-        return view('pasien.index', compact('pasiens'));
+        $rumahSakits = RumahSakit::orderBy('nama')->get();
+
+        return view('pasien.index', compact('pasiens', 'rumahSakits'));
     }
 
     public function create()
@@ -66,5 +68,18 @@ class PasienController extends Controller
         }
 
         return redirect()->route('pasien.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function filter($rumahSakitId)
+    {
+        if ($rumahSakitId == 'all') {
+            $pasiens = Pasien::with('rumahSakit')->get();
+        } else {
+            $pasiens = Pasien::with('rumahSakit')
+                ->where('rumah_sakit_id', $rumahSakitId)
+                ->get();
+        }
+
+        return response()->json($pasiens);
     }
 }
