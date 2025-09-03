@@ -56,10 +56,15 @@ class PasienController extends Controller
             ->with('success', 'Data pasien berhasil diupdate.');
     }
 
-    public function destroy(Pasien $pasien)
+    public function destroy($id)
     {
+        $pasien = Pasien::findOrFail($id);
         $pasien->delete();
 
-        return redirect()->route('pasien.index')->with('success', 'Data Pasien berhasil dihapus');
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
+        }
+
+        return redirect()->route('pasien.index')->with('success', 'Data berhasil dihapus');
     }
 }
