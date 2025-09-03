@@ -17,4 +17,9 @@ class RumahSakit extends Model
         'email',
         'telepon',
     ];
+
+    public function pasiens()
+    {
+        return $this->hasMany(Pasien::class);
+    }
 }

@@ -27,12 +27,12 @@
                     </li>
 
                     {{-- Menu Pasien --}}
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->is('pasien*') ? 'active' : '' }}" 
                            href="{{ route('pasien.index') }}">
                            Pasien
                         </a>
-                    </li> --}}
+                    </li>
 
                     @guest
                         <li class="nav-item">
